@@ -8,7 +8,8 @@ Assume you want to share your image with others and make it publicly available o
 
 **Your answer:** Give two reasons why this is a bad idea. Think of who could then read your credentials, and of what happens when your Learner Lab session ends.
 
-...
+1. Anyone who can access the public image could extract the credentials and use them to access my AWS resources.
+2. The image may be shared publicly, so my credentials could be copied and used by strangers. There is potential for unauthorized charges, data theft, or misuse of my AWS account. 
 
 ## 2. Where did the Atlas password come from?
 
@@ -18,7 +19,11 @@ In Step 4, you ran the analysis once with `-v ~/.aws:/home/app/.aws:ro` only, wi
 
 **Your answer:** Explain, step by step, where the container found the Atlas settings in that run.
 
-...
+1. The `~/.aws` directory was mounted into the container, giving it access to my AWS credentials.
+2. The program used those credentials to authenticate with AWS.
+3. `get_atlas_settings()` retrieved the `mongodb_credentials` parameter from AWS Systems Manager Parameter Store.
+4. The parameter was decrypted, and the program extracted the MongoDB Atlas URL, username, and password.
+5. The program used those settings to connect to MongoDB Atlas, even though I did not pass the three `-e` environment variables.
 
 ## 3. Same tag, different image
 
@@ -26,4 +31,7 @@ Run `docker images book-analysis`, and note the image ID of `book-analysis:0.1.0
 
 **Your answer:** Paste the image ID from before and after the rebuild. Why is it a problem for someone who uses your image that `0.1.0` now names a different image, and what should you have done instead?
 
-...
+Before: 04911e4f970c
+After: bfd2ef020d4d
+
+Reusing the same tag is confusing because the tag points to the newly built image, even though its name remains 0.1.0. Someone might think they are using the original image when they are actually using a different one.
